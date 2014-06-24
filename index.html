@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <title>Botnet Controller</title>
+  <script type="text/javascript" src="./vis.js/vis.js"></script>
+  <script type="text/javascript" src="./js/main.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="./vis.js/vis.css">
+  <link type="text/css" rel="stylesheet" href="./css/custom.css">
+</head>
+
+<body onload="draw();">
+<h2>Botnet Controller</h2>
+
+<div id="graph-popUp">
+  <span id="operation">node</span> <br>
+	<table style="margin:auto;">
+		<tr>
+			<td>id</td><td><input id="node-id" value="new value"></td>
+		</tr>
+		<tr>
+			<td>label</td><td><input id="node-label" value="new value"></td>
+		</tr>
+		<tr>
+			<td>group</td><td><input id="node-group" value="new value"></td>
+		</tr>
+	</table>
+  <input type="button" value="save" id="saveButton"></button>
+  <input type="button" value="cancel" id="cancelButton"></button>
+</div>
+<br />
+<div id="mygraph"></div>
+
+<p id="selection"></p>
+</body>
+</html>
