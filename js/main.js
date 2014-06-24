@@ -44,25 +44,17 @@ function continue_drawing(connectionCount, container, data) {
             arrowScaleFactor: 0.5
         },
         groups: {
-            'switch': {
-                shape: 'triangle',
-                color: '#FF9900' // orange
-            },
-            desktop: {
+            input: {
                 shape: 'dot',
                 color: "#2B7CE9" // blue
             },
-            mobile: {
+            output: {
                 shape: 'dot',
                 color: "#5A1E5C" // purple
             },
-            server: {
-                shape: 'square',
+            expert: {
+                shape: 'dot',
                 color: "#C5000B" // red
-            },
-            internet: {
-                shape: 'square',
-                color: "#109618" // green
             }
         },
         stabilize: false,
@@ -151,7 +143,7 @@ function continue_drawing(connectionCount, container, data) {
         data.label = labelInput.value;
         data.group = groupInput.value;
 
-        $.get("/php/editnode.php?id=" + data.id + "&label=" + data.label + "&status=" + data.status);
+        $.get("/php/editnode.php?id=" + data.id + "&label=" + data.label + "&status=" + data.status + "&group=" + data.group);
 
         clearPopUp();
         callback(data);
