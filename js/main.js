@@ -35,6 +35,26 @@ function draw() {
     });
 }
 
+function create_form(title){
+    var popup = document.getElementById("graph-popUp");
+    var span = document.getElementById('graph-popUp-title');
+    
+    span.innerHTML = title;
+}
+
+function add_field() {
+    var table = document.getElementById("graph-popUp-fields");
+    new_row = table.insertRow(-1);
+    cell1 = new_row.insertCell(0);
+    cell2 = new_row.insertCell(1);
+    
+    cell1_content = document.createElement("input");
+    cell2_content = document.createElement("input");
+    
+    cell1.appendChild(cell1_content);
+    cell2.appendChild(cell2_content);
+}
+
 function continue_drawing(connectionCount, container, data) {
     var options = {
         edges: {
@@ -61,30 +81,33 @@ function continue_drawing(connectionCount, container, data) {
         dataManipulation: true,
         navigation: true,
         onAdd: function(data,callback) {
-            var span = document.getElementById('operation');
+            var span = document.getElementById('graph-popUp-title');
             var idInput = document.getElementById('node-id');
             var labelInput = document.getElementById('node-label');
             var groupInput = document.getElementById('node-group');
-            var saveButton = document.getElementById('saveButton');
-            var cancelButton = document.getElementById('cancelButton');
+            var saveButton = document.getElementById('graph-popUp-save');
+            var cancelButton = document.getElementById('graph-popUp-cancel');
+            var addFieldButton = document.getElementById('graph-popUp-add');
             var div = document.getElementById('graph-popUp');
-            span.innerHTML = "Add Node";
+            create_form("Add Node");
             idInput.value = data.id;
             labelInput.value = data.label;
             groupInput.value = data.group;
             saveButton.onclick = saveData.bind(this,data,callback);
+            addFieldButton.onclick = add_field.bind();
             cancelButton.onclick = clearPopUp.bind();
             div.style.display = 'block';
         },
         onEdit: function(data,callback) {
-            var span = document.getElementById('operation');
+            var span = document.getElementById('graph-popUp-title');
             var idInput = document.getElementById('node-id');
             var labelInput = document.getElementById('node-label');
             var groupInput = document.getElementById('node-group');
-            var saveButton = document.getElementById('saveButton');
-            var cancelButton = document.getElementById('cancelButton');
+            var saveButton = document.getElementById('graph-popUp-save');
+            var cancelButton = document.getElementById('graph-popUp-cancel');
+            var addFieldButton = document.getElementById('graph-popUp-add');
             var div = document.getElementById('graph-popUp');
-            span.innerHTML = "Edit Node";
+            create_form("Edit Node");
             idInput.value = data.id;
             labelInput.value = data.label;
             groupInput.value = data.group;
@@ -126,8 +149,8 @@ function continue_drawing(connectionCount, container, data) {
     graph.on("resize", function(params) {console.log(params.width,params.height)});
 
     function clearPopUp() {
-        var saveButton = document.getElementById('saveButton');
-        var cancelButton = document.getElementById('cancelButton');
+        var saveButton = document.getElementById('graph-popUp-save');
+        var cancelButton = document.getElementById('graph-popUp-cancel');
         saveButton.onclick = null;
         cancelButton.onclick = null;
         var div = document.getElementById('graph-popUp');

@@ -14,20 +14,21 @@
 <h2>Botnet Controller</h2>
 
 <div id="graph-popUp">
-  <span id="operation">node</span> <br>
-	<table style="margin:auto;">
-		<tr>
-			<td>id</td><td><input id="node-id" value="new value"></td>
-		</tr>
-		<tr>
-			<td>label</td><td><input id="node-label" value="new value"></td>
-		</tr>
-		<tr>
-			<td>group</td><td><input id="node-group" value="new value"></td>
-		</tr>
-	</table>
-  <input type="button" value="save" id="saveButton"></button>
-  <input type="button" value="cancel" id="cancelButton"></button>
+    <span id="graph-popUp-title">node</span> <br>
+    <table id="graph-popUp-fields" style="margin:auto;">
+        <tr>
+            <td>id</td><td><input id="node-id" value="new value"></td>
+        </tr>
+        <tr>
+            <td>label</td><td><input id="node-label" value="new value"></td>
+        </tr>
+        <tr>
+            <td>group</td><td><input id="node-group" value="new value"></td>
+        </tr>
+    </table>
+    <input type="button" value="add field" id="graph-popUp-add"></button>
+    <input type="button" value="save" id="graph-popUp-save"></button>
+    <input type="button" value="cancel" id="graph-popUp-cancel"></button>
 </div>
 <br />
 <div id="mygraph"></div>
