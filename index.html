@@ -1,38 +1,71 @@
 <!doctype html>
 <html>
-<head>
-  <title>Botnet Controller</title>
-  <script type="text/javascript" src="./vis.js/vis.js"></script>
-  <script type="text/javascript" src="./js/main.js"></script>
-  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Botnet Controller</title>
+        
+        <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./vis.js/vis.js"></script>
+        <script type="text/javascript" src="./js/main.js"></script>
 
-  <link type="text/css" rel="stylesheet" href="./vis.js/vis.css">
-  <link type="text/css" rel="stylesheet" href="./css/custom.css">
-</head>
+        <link type="text/css" rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href="./vis.js/vis.css">
+        <link type="text/css" rel="stylesheet" href="./css/custom.css">
+    </head>
 
-<body onload="draw();">
-<h2>Botnet Controller</h2>
+    <body>
+        <div class="container-fluid">
+            <div class="page-header">
+                <h2>Botnet Controller</h2>
+            </div>
 
-<div id="graph-popUp">
-    <span id="graph-popUp-title">node</span> <br>
-    <table id="graph-popUp-fields" style="margin:auto;">
-        <tr>
-            <td>id</td><td><input id="node-id" value="new value"></td>
-        </tr>
-        <tr>
-            <td>label</td><td><input id="node-label" value="new value"></td>
-        </tr>
-        <tr>
-            <td>group</td><td><input id="node-group" value="new value"></td>
-        </tr>
-    </table>
-    <input type="button" value="add field" id="graph-popUp-add"></button>
-    <input type="button" value="save" id="graph-popUp-save"></button>
-    <input type="button" value="cancel" id="graph-popUp-cancel"></button>
-</div>
-<br />
-<div id="mygraph"></div>
-
-<p id="selection"></p>
-</body>
+            <div class="row" id="file-select">
+                <div class="col-xs-12">
+                    <p>Please load the following files from IntelMQ:</p>
+                    <div class="form-group">
+                        <label for="runtime-file">runtime.conf</label>
+                        <input id="runtime-file" type="file" name="runtime-file">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pipeline-file">pipeline.conf</label>
+                        <input id="pipeline-file" type="file" name="pipeline-file">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bots-file">bots.conf</label>
+                        <input id="bots-file" type="file" name="bots-file">
+                    </div>
+                    <input type="button" class="btn btn-primary" value="submit" onclick="verify_files()">
+                </div>
+            </div>
+            <br />
+            <div class="row" id="graph-row">
+                <div class="col-xs-2" id="available-bots">
+                    <h4>Available bots:</h4>
+                </div>
+                <div class="col-xs-10" id="mygraph">
+                </div>
+            </div>
+            <div id="graph-popUp">
+                <span id="graph-popUp-title">node</span> <br>
+                <table id="graph-popUp-fields" style="margin:auto;">
+                    <tr>
+                        <td>id</td><td><input id="node-id" value="new value"></td>
+                    </tr>
+                    <tr>
+                        <td>label</td><td><input id="node-label" value="new value"></td>
+                    </tr>
+                    <tr>
+                        <td>group</td><td><input id="node-group" value="new value"></td>
+                    </tr>
+                </table>
+                <input type="button" value="add field" id="graph-popUp-add"></button>
+                <input type="button" value="save" id="graph-popUp-save"></button>
+                <input type="button" value="cancel" id="graph-popUp-cancel"></button>
+            </div>
+        </div>
+    </body>
 </html>
