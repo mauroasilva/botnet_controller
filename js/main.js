@@ -1,6 +1,7 @@
-var nodes = null;
-var edges = null;
+var nodes = [];
+var edges = [];
 var graph = null;
+var bots = {};
 
 var CORE_FIELDS = 3;
 
@@ -54,12 +55,33 @@ function load_bots(config) {
         
         for (bot_name in group) {
             var bot = group[bot_name];
-            bot_title = document.createElement('h6');
-            bot_title.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;" + bot_name;
+            
+            var bot_title = document.createElement('button');
+            bot_title.setAttribute('type', 'button');
+            bot_title.setAttribute('class', 'btn btn-link');
+            bot_title.setAttribute('data-toggle', 'tooltip');
+            bot_title.setAttribute('data-placement', 'right');
+            bot_title.setAttribute('title', bot['description']);
+            bot_title.setAttribute('onclick', 'fill_bot("' + bot_group + '", "' + bot_name + '")');
+            bot_title.innerHTML = bot_name;
+            
             available_bots.appendChild(bot_title);
+            available_bots.appendChild(document.createElement('br'));
+            
+            if (bots[bot_group] === undefined) {
+                bots[bot_group] = {};
+            }
+            
+            bots[bot_group][bot_name] = {
+                'name': bot['name'],
+                'group': bot['group'],
+                'module': bot['module'],
+                'description': bot['description']
+            }
             
             for (parameter in bot['parameters']) {
                 var value = bot['parameters'][parameter];
+                bots[bot_group][bot_name][parameter] = value;
             }
         }
     }
@@ -80,6 +102,31 @@ function load_pipeline(config) {
     draw();
 }
 
+function fill_bot(group, name) {
+    var bot = bots[group][name];
+    
+    for (key in bot) {
+        element = document.getElementById("node-" + key)
+        
+        if (!element) {
+            console.info("Creating row");
+            new_row = table.insertRow(-1);
+            cell1 = new_row.insertCell(0);
+            cell2 = new_row.insertCell(1);
+            
+            cell1.innerHTML = key;
+            element = document.createElement("input");
+            element.setAttribute('type', 'text');
+            cell2.appendChild(element);
+        }
+        
+        console.info("Setting: " + key);
+        console.dir(element)
+        element.setAttribute('value', bot[key]);    
+        console.info("Finished");
+    }
+}
+
 function draw() {
     var connectionCount = [];
 
@@ -87,32 +134,21 @@ function draw() {
     var container = document.getElementById('mygraph');
 
     var data = {
-        nodes: [],
-        edges: []
+        nodes: nodes,
+        edges: edges
     }
-
-    $.getJSON('/php/getdata.php', function (jsondata) {
-        for (var key in jsondata['nodes']) {
-            data.nodes.push(jsondata['nodes'][key]);
-        }
-
-        for (var key in jsondata['edges']) {
-            data.edges.push(jsondata['edges'][key]);
-        }
-
-        continue_drawing(connectionCount, container, data);
-    }).error(function() { 
-	alert("ERROR LOADING DATA");
-        continue_drawing(connectionCount, container, data); 
-    });
     
     popup = document.getElementById("graph-popUp");
     span = document.getElementById('graph-popUp-title');
     table = document.getElementById("graph-popUp-fields");
+    
+    continue_drawing(connectionCount, container, data);
 }
 
 function create_form(title){
     span.innerHTML = title;
+    popup.style.top = Math.max(window.innerHeight * 0.5 - 300, 0) + "px";
+    popup.style.left = Math.max(window.innerWidth * 0.5 - 150, 0) + "px";
 }
 
 function load_form(data){
@@ -191,17 +227,12 @@ function continue_drawing(connectionCount, container, data) {
         dataManipulation: true,
         navigation: true,
         onAdd: function(data,callback) {
-            var idInput = document.getElementById('node-id');
-            var labelInput = document.getElementById('node-label');
-            var groupInput = document.getElementById('node-group');
+            console.dir(callback);
             var saveButton = document.getElementById('graph-popUp-save');
             var cancelButton = document.getElementById('graph-popUp-cancel');
             var addFieldButton = document.getElementById('graph-popUp-add');
             var div = document.getElementById('graph-popUp');
             create_form("Add Node");
-            idInput.value = data.id;
-            labelInput.value = data.label;
-            groupInput.value = data.group;
             saveButton.onclick = saveData.bind(this,data,callback);
             addFieldButton.onclick = add_field.bind();
             cancelButton.onclick = clearPopUp.bind();
@@ -249,11 +280,6 @@ function continue_drawing(connectionCount, container, data) {
         }
     };
     graph = new vis.Graph(container, data, options);
-
-    // add event listeners
-    graph.on('select', function(params) {
-        document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-    });
 
     graph.on("resize", function(params) {console.log(params.width,params.height)});
 

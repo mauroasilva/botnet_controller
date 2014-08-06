@@ -2,6 +2,11 @@ body {
   height: 100%;
   min-height: 100%;
   font: 10pt sans;
+  z-index: -1;
+}
+
+#available-bots {
+  overflow-y: scroll;
 }
 
 #mygraph {
@@ -60,8 +65,8 @@ div.table_description {
 #graph-popUp {
   display:none;
   position:absolute;
-  top:150px;
-  left:150px;
+  top:100px;
+  margin: auto;
   z-index:299;
   background-color: #f9f9f9;
   border-style:solid;
@@ -69,4 +74,5 @@ div.table_description {
   border-color: #5394ed;
   padding:10px;
   text-align: center;
+  width:300px;
 }
