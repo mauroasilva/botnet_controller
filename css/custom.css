@@ -1,12 +1,15 @@
 body {
-  height: 100%;
-  min-height: 100%;
   font: 10pt sans;
   z-index: -1;
 }
 
+.page-header {
+  margin-top: 20px;
+}
+
 #available-bots {
   overflow-y: scroll;
+  height: 100%;
 }
 
 #mygraph {
@@ -26,6 +29,10 @@ body {
 
 #graph-row.col-xs-2 {
   height: 100%;
+}
+
+#graph-tab {
+    height: 100%;
 }
 
 table td {
