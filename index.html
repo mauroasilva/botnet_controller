@@ -63,6 +63,11 @@
                             </div>
                             
                             <div class="form-group">
+                                <label for="startup-file">startup.conf</label>
+                                <input id="startup-file" type="file" name="startup-file">
+                            </div>
+                            
+                            <div class="form-group">
                                 <label for="pipeline-file">pipeline.conf</label>
                                 <input id="pipeline-file" type="file" name="pipeline-file">
                             </div>
@@ -71,7 +76,9 @@
                                 <label for="bots-file">bots.conf</label>
                                 <input id="bots-file" type="file" name="bots-file">
                             </div>
-                            <input type="button" class="btn btn-primary" value="submit" onclick="verify_files()">
+                            
+                            <input type="button" class="btn btn-primary" value="submit" onclick="verify_files(true)">
+                            <input type="button" class="btn btn-primary" value="start from scratch" onclick="verify_files(false)">
                         </div>
                     </div>
                     <br />

@@ -1,45 +1,49 @@
 function generate_pipeline_conf(edges) {
-    var pipeline_conf = '';
-    var edge_from_dict = {};
-    var edge_to_dict = {};
-    var done = {};
+    var conf_string = '';
+    var new_edges = {};
     
     for (index in edges) {
         var edge = edges[index];
         
-        if (!edge_from_dict[edge.from]) {
-            edge_from_dict[edge.from] = {};
+        if (!new_edges[edge.from]) {
+            new_edges[edge.from] = {
+                'from': [],
+                'to': []
+            }
         }
-        edge_from_dict[edge.from][edge.to] = true;
-        edge_to_dict[edge.to] = true;
         
-        console.info(edge.from + ' - ' + edge.to);
+        if (!new_edges[edge.to]) {
+            new_edges[edge.to] = {
+                'from': [],
+                'to': []
+            }
+        }
+        
+        new_edges[edge.from].to.push(edge.to + '-queue');
+        new_edges[edge.to].from.push(edge.from + '-queue');
     }
     
-    for (from in edge_from_dict) {
-        if (edge_to_dict[from]) {
-            pipeline_conf += from + ' = ' + from + '-queue | ';
-        } else {
-            pipeline_conf += from + ' = None | ';
+    conf_string = JSON.stringify(new_edges, undefined, 4);
+    
+    return '<p>' + conf_string.replace(/\n/g, '</p>\n<p>').replace(/ /g, "&nbsp;") + '</p>';
+}
+
+function read_pipeline_conf(config) {
+    var edges = [];
+    var i = 0;
+    
+    for (from in config) {
+        for (index in config[from].to) {
+               var edge_id = 'edge' + i++;
+               var new_edge = {
+                   'id': edge_id,
+                   'from': from,
+                   'to': config[from].to[index]
+               };
+               
+               edges.push(new_edge);
         }
-        
-        for (to in edge_from_dict[from]) {
-            pipeline_conf += to + '-queue,';
-        }
-        
-        pipeline_conf = pipeline_conf.substring(0, pipeline_conf.length - 1);
-        pipeline_conf += '\n<br>'
-        
-        done[from] = true;
     }
     
-    for (to in edge_to_dict) {
-        if (done[to]) {
-            continue;
-        }
-        
-        pipeline_conf += to + ' = ' + to + '-queue | None\n<br>';
-    }
-    
-    return pipeline_conf;
+    return edges;
 }

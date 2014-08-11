@@ -26,6 +26,8 @@ var GROUP_COLORS = {
     'Output': '#FFFF00'    
 }
 
+var STARTUP_KEYS = ['group', 'name', 'module', 'description'];
+
 var popup = document.getElementById("graph-popUp");
 var span = document.getElementById('graph-popUp-title');
 var table = document.getElementById("graph-popUp-fields");
@@ -47,6 +49,36 @@ window.onresize = function(event) {
     content.style.height = (window.innerHeight - header.offsetHeight - parseInt(header_style.marginTop) - parseInt(header_style.marginBottom) - 20) + "px";
 }
 
+function convert_edges(edges) {
+    var new_edges = [];
+    
+    for (index in edges) {
+        var new_edge = {};
+        new_edge.id = edges[index]['id'];
+        new_edge.from = edges[index]['from'];
+        new_edge.to = edges[index]['to'];
+        
+        new_edges.push(new_edge);
+    }
+    
+    return new_edges;
+}
+
+function convert_nodes(nodes) {
+    var new_nodes = [];
+    
+    for (index in nodes) {
+        var new_node = {};
+        new_node.id = nodes[index]['id'];
+        new_node.label = nodes[index]['id'];
+        new_node.group = nodes[index]['group'];
+        
+        new_nodes.push(new_node);
+    }
+    
+    return new_nodes;
+}
+
 function disable_file_submit() {
     var file_form = document.getElementById("file-select");
     var graph_row = document.getElementById("graph-row");
@@ -54,25 +86,36 @@ function disable_file_submit() {
     graph_row.style.display = 'block';
 }
 
-function load_file(elem_id, callback) {
+function load_file(elem_id, callback, argument) {
     var file = document.getElementById(elem_id).files[0];
     var file_result = undefined;
     
     var reader = new FileReader();
     reader.onload = (function (event) {
-        obj = JSON.parse(event.target.result);
-        callback(obj);
+        try {
+            obj = JSON.parse(event.target.result);
+            callback(obj, argument);
+        } catch(err) {
+            callback(event.target.result, argument);
+        }
     });
     reader.readAsText(file);
 }
 
-function verify_files() {
-    if (document.getElementById("bots-file").files[0] && 
-        document.getElementById("pipeline-file").files[0] && 
-        document.getElementById("runtime-file").files[0]) {
-        load_file('bots-file', load_bots);
+function verify_files(load_config) {
+    if (load_config) {
+        if (document.getElementById("startup-file").files[0] && 
+            document.getElementById("pipeline-file").files[0] && 
+            document.getElementById("runtime-file").files[0]) {
+            /* Do nothing */
+        } else {
+            alert('There are some files missing');
+        }
+    }
+    if (document.getElementById("bots-file").files[0]) {
+        load_file('bots-file', load_bots, load_config);
     } else {
-        alert('There are some files missing');
+        alert('You need to load at least the bots.conf file.');
     }
 
     var body = document.getElementsByTagName('body')[0];
@@ -91,7 +134,7 @@ function verify_files() {
     content.style.height = (window.innerHeight - header.offsetHeight - parseInt(header_style.marginTop) - parseInt(header_style.marginBottom) - 20) + "px";
 }
 
-function load_bots(config) {
+function load_bots(config, load_config) {
     for(bot_group in config) {
         var group = config[bot_group];
         
@@ -137,18 +180,35 @@ function load_bots(config) {
             }
         }
     }
-    
-    load_file('runtime-file', load_runtime);
+ 
+    if (load_config) {
+        load_file('runtime-file', load_runtime);
+    } else {
+        disable_file_submit();
+        draw();
+    }
 }
 
 function load_runtime(config) {
-    // Do stuff
+    nodes = read_runtime_conf(config);
+    
+    alert(JSON.stringify(nodes));
         
+    load_file('startup-file', load_startup);
+}
+
+function load_startup(config) {
+    nodes = read_startup_conf(config, nodes);
+    
+    alert(JSON.stringify(nodes));
+    
     load_file('pipeline-file', load_pipeline);
 }
 
 function load_pipeline(config) {
-    // Do stuff
+    edges = read_pipeline_conf(config);
+    
+    alert(JSON.stringify(edges));
         
     disable_file_submit();
     draw();
@@ -200,13 +260,19 @@ function draw() {
     var container = document.getElementById('mygraph');
 
     var data = {
-        nodes: [],
-        edges: []
+        nodes: convert_nodes(nodes),
+        edges: convert_edges(edges)
     }
+    
+    alert(JSON.stringify(data));
     
     popup = document.getElementById("graph-popUp");
     span = document.getElementById('graph-popUp-title');
     table = document.getElementById("graph-popUp-fields");
+    
+    document.getElementById('pipeline-conf-content').innerHTML = generate_pipeline_conf(edges);
+    document.getElementById('runtime-conf-content').innerHTML = generate_runtime_conf(nodes);
+    document.getElementById('startup-conf-content').innerHTML = generate_startup_conf(nodes);
     
     continue_drawing(connectionCount, container, data);
 }

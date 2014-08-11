@@ -35,6 +35,11 @@ body {
     height: 100%;
 }
 
+.tab-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 table td {
   font-size: 12px;
   border-width:0px;
